@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  pyserver:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    command: python3 run.py
+
+  pyload:
+    build: .
+    depends_on:
+      - db
+      - pyserver
+    command: python3 load_db.py
+
+  db:
+    image: postgis/postgis:13-3.3
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
